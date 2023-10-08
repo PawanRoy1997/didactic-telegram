@@ -1,6 +1,8 @@
 package com.nextxform.simpleapicall.api
 
 import android.util.Log
+import arrow.core.left
+import arrow.core.right
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -56,11 +58,15 @@ class HttpRequest(
                     }
                 }
 
-                if(responseCode == HttpURLConnection.HTTP_OK){
-                    callBack.processFinished(sb.toString())
+                val responseModel = ResponseModel(responseCode, sb.toString())
+
+                val result = if(responseCode == HttpURLConnection.HTTP_OK){
+                    responseModel.right()
                 }else{
-                    callBack.processFailed(responseCode, sb.toString())
+                    responseModel.left()
                 }
+
+                callBack.callResponse(result)
             }
         } catch (e: Exception) {
             Log.d("ERROR", e.message.orEmpty())

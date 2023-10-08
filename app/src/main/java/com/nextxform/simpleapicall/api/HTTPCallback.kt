@@ -1,6 +1,9 @@
 package com.nextxform.simpleapicall.api
 
+import arrow.core.Either
+
 interface HTTPCallback {
-    fun processFinished(output: String)
-    fun processFailed(responseCode: Int, output: String)
+    fun callResponse(response: Either<ResponseModel, ResponseModel>)
 }
+
+data class ResponseModel(val responseCode: Int, val responseBody: String)
